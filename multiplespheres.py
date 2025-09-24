@@ -57,7 +57,12 @@ def checkAndCreateCollection(collection_name):
         bpy.context.scene.collection.children.link(target_collection)
         print(f"Created new collection: '{collection_name}'")
         return target_collection
-    
+#Function to set all sphere objects to smooth shading
+def smoothShadeAll(objs):
+    for obj in objs:
+        for f in obj.data.polygons:
+            f.use_smooth = True
+
 def createSpheres(max_loc_range, radius, n_spheres, target_collection, collection_name):
     for i in range(n_spheres):
         #Create the random position coordinates
@@ -101,5 +106,6 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_r
     
     #set diameter for all speres
     setDiametersForAll(objs)
+    smoothShadeAll(objs)
 
 generateRandomSpheres()
