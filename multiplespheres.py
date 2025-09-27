@@ -173,7 +173,10 @@ def createSpheres(max_loc_range, radius, n_spheres, target_collection, collectio
         target_collection.objects.link(new_sphere)
         print(f"Created sphere '{new_sphere.name}' in '{collection_name}' with radius {radius:.2f}")
 
-def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_range = 10.0, collection_name = "SPHERES"):
+def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_range = 20.0, collection_name = "SPHERES"):
+    
+    #lets randomize the size of the bounding box
+    max_loc_range = random.uniform(5, max_loc_range)
     
     #Create collection if it does not exist already
     target_collection = checkAndCreateCollection(collection_name)
