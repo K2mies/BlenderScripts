@@ -206,7 +206,7 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_r
     #Move objects that are out of bounds inside the bounding box
     moveOutofBoundsObjects(objs, max_loc_range)
     
-    #set diameter for all speres
+    #reset diameter for all speres (stops overlap of offsets)
     setDiametersForAll(objs)
     
     #add smooth shading to all the objects
