@@ -214,7 +214,12 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_r
     
     #add smooth shading to all the objects
     smoothShadeAll(objs)
-    #reset diameter for all speres
-    #setDiametersForAll(objs)
 
+    # Deselect all objects to ensure only the bounding box is selected(for visual purposes)
+    bpy.ops.object.select_all(action='DESELECT')
+    
+    #Set the bounding box to selected
+    bpy.data.collections['SPHERES'].objects['Bounding_Box.001'].select_set(True)
+
+#The main function executes here
 generateRandomSpheres()
