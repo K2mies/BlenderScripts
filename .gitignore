@@ -1,0 +1,5 @@
+# 1. Ignore macOS system files
+.DS_Store
+
+# 2. Ignore temporary and backup files
+*.blend1
