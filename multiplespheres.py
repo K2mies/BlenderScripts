@@ -218,4 +218,4 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_r
     bpy.data.collections['SPHERES'].objects['Bounding_Box'].select_set(True)
 
 #The main function executes here
-generateRandomSpheres(min_count = 5, max_count = 30, min_loc_range = 5,  max_loc_range = 20.0,)
+generateRandomSpheres(min_count = 5, max_count = 30, min_loc_range = 5,  max_loc_range = 30.0,)
