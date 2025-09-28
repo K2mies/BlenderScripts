@@ -48,6 +48,7 @@ def setDiametersForAll(objs):
 #Function to check if SPHERES collection exists and if not to create it
 def checkAndCreateCollection(collection_name):
     #check if target collection exists, if not then create it
+    #if it already exists then delete it's contents
     if collection_name in bpy.data.collections:
         target_collection = bpy.data.collections[collection_name]
         objects_to_delete = target_collection.objects
