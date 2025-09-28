@@ -87,13 +87,17 @@ def checkForName(obj, name):
 
 # Function to check if sphere is out of bounds
 def isSphereOutofBounds(obj, max_loc_range): 
+    
     radius = obj.dimensions[0] / 2
+    
     pos_distance_x = obj.location[0] + radius
     pos_distance_y = obj.location[1] + radius
     pos_distance_z = obj.location[2] + radius
+    
     neg_distance_x = obj.location[0] - radius
     neg_distance_y = obj.location[1] - radius
     neg_distance_z = obj.location[2] - radius
+    
     if pos_distance_x >= max_loc_range or neg_distance_x <= -max_loc_range:
         return True
     if pos_distance_y >= max_loc_range or neg_distance_y <= -max_loc_range:
