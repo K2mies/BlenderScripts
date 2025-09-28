@@ -219,7 +219,7 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_r
     bpy.ops.object.select_all(action='DESELECT')
     
     #Set the bounding box to selected
-    bpy.data.collections['SPHERES'].objects['Bounding_Box.001'].select_set(True)
+    bpy.data.collections['SPHERES'].objects['Bounding_Box'].select_set(True)
 
 #The main function executes here
 generateRandomSpheres()
