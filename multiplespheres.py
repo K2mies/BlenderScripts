@@ -170,10 +170,10 @@ def createSpheres(max_loc_range, radius, n_spheres, target_collection, collectio
         target_collection.objects.link(new_sphere)
         print(f"Created sphere '{new_sphere.name}' in '{collection_name}' with radius {radius:.2f}")
 
-def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_range = 20.0, collection_name = "SPHERES"):
+def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_range = 5,  max_loc_range = 20.0, collection_name = "SPHERES"):
     
     #randomize the size of the bounding box based on the max_loc_range
-    max_loc_range = random.uniform(5, max_loc_range)
+    max_loc_range = random.uniform(min_loc_range, max_loc_range)
     
     #Create collection if it does not exist already
     target_collection = checkAndCreateCollection(collection_name)
@@ -218,4 +218,4 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_r
     bpy.data.collections['SPHERES'].objects['Bounding_Box'].select_set(True)
 
 #The main function executes here
-generateRandomSpheres()
+generateRandomSpheres(min_count = 5, max_count = 30, min_loc_range = 5,  max_loc_range = 20.0,)
