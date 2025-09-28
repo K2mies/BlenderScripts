@@ -148,9 +148,6 @@ def moveOutofBoundsObjects(objs, max_loc_range):
     
 # Function to create all the randomised spheres     
 def createSpheres(max_loc_range, radius, n_spheres, target_collection, collection_name):
-    #createBoundingBox(max_loc_range, target_collection)
-    #max_loc_range *= 0.5
-#    print("max loc range: ", max_loc_range)
     for i in range(n_spheres):
         #Create the random position coordinates
         loc_x = random.uniform(-max_loc_range, max_loc_range)
@@ -164,7 +161,7 @@ def createSpheres(max_loc_range, radius, n_spheres, target_collection, collectio
         new_sphere = bpy.context.active_object
         new_sphere.name = f"RandomSphere_{i}"
         
-        # 5. Link the new sphere to the target collection
+        # Link the new sphere to the target collection
         # First, unlink from the default scene collection
         default_collection = bpy.context.scene.collection
         default_collection.objects.unlink(new_sphere)
@@ -175,7 +172,7 @@ def createSpheres(max_loc_range, radius, n_spheres, target_collection, collectio
 
 def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_range = 20.0, collection_name = "SPHERES"):
     
-    #lets randomize the size of the bounding box
+    #randomize the size of the bounding box based on the max_loc_range
     max_loc_range = random.uniform(5, max_loc_range)
     
     #Create collection if it does not exist already
@@ -191,34 +188,33 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, max_loc_r
     #create the bounding box
     createBoundingBox(max_loc_range, target_collection)
     
-    #max_loc_range *= 0.5
     #create the spheres and add them to the collection
     createSpheres(max_loc_range, radius, n_spheres, target_collection, collection_name)
     
     #grab object array
     objs = bpy.data.collections['SPHERES'].objects
     
-    #set diameter for all speres
+    #set diameter for all speres based on the distance between them
     setDiametersForAll(objs)
     
-    # -------------------------------------------------------------
+    # -------------------------------------------------------------------#
     # FIX: Force Blender to update the dimensions before checking bounds!
     bpy.context.view_layer.update() 
-    # 
+    # -------------------------------------------------------------------#
     
-    #Move objects that are out of bounds inside the bounding box
+    #Move objects that are out of bounds inside the bounding box range
     moveOutofBoundsObjects(objs, max_loc_range)
     
-    #reset diameter for all speres (stops overlap of offsets)
+    #recalculate diameter for all speres (stops overlap of offsets)
     setDiametersForAll(objs)
     
     #add smooth shading to all the objects
     smoothShadeAll(objs)
 
-    # Deselect all objects to ensure only the bounding box is selected(for visual purposes)
+    # Deselect all objepΩcts to ensure only the bounding box is selected (for visual purposes)
     bpy.ops.object.select_all(action='DESELECT')
     
-    #Set the bounding box to selected
+    #Set the bounding box to selected (fot visual purposes)
     bpy.data.collections['SPHERES'].objects['Bounding_Box'].select_set(True)
 
 #The main function executes here
