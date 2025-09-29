@@ -31,7 +31,7 @@ def calculateMinDistanceFromObjects(base_obj, objs):
             distance = calculateDistance(base_obj.location, obj.location)
             if distance < min_distance and distance > 0:
                 min_distance = distance
-    return min_distance    
+    return min_distance
 
 #Function to change the diameter of a sphere to the distance
 def setDiameter(obj, diameter):
@@ -45,9 +45,44 @@ def setDiametersForAll(objs):
             distance = calculateMinDistanceFromObjects(obj, objs)
             setDiameter(obj, distance)
 
+# Function to return he closest obj to the base object            
+def getClosestObjAndDistance(base_obj, objs):
+    min_distance = calculateMaxDistanceFromObjects(base_obj, objs)
+    closest_obj = None
+    for obj in objs:
+        if (checkForName(obj, "RandomSphere")):
+            distance = calculateDistance(base_obj.location, obj.location)
+            if distance < min_distance and distance > 0:
+                closest_obj = obj
+                min_distance = distance
+    return closest_obj, min_distance
+
+#Function to check if there is still room to expand one of the spheres
+def isCombinedRadiUnderDistance(obj, closest_obj, distance):
+    if ((obj.dimensions[0] / 2) + (closest_obj.dimensions[0] / 2) < distance):
+        return True
+    else:
+        return False
+    
+#set the diameter based on gap between objects
+def fillDiameterGap(obj, closest_obj, distance):
+    radi = (obj.dimensions[0] / 2) + (closest_obj.dimensions[0] / 2)
+    expansion = distance - radi
+    safe_expansion = expansion * 0.5
+    setDiameter(obj, obj.dimensions[0] + expansion)
+
+#function to fill the diameter gaps left between all objects
+def fillDiameterGapsBetweenAllObjects(objs):
+    for obj in objs:
+        if (checkForName(obj, "RandomSphere")):
+            closest_obj, distance = getClosestObjAndDistance(obj, objs)
+            if (isCombinedRadiUnderDistance(obj, closest_obj, distance)):
+                fillDiameterGap(obj, closest_obj, distance)
+    
+
 #Function to check if SPHERES collection exists and if not to create it
 def checkAndCreateCollection(collection_name):
-    #check if target collection exists, if not then create it
+    #check if target collection exists, if notp then create it
     #if it already exists then delete it's contents
     if collection_name in bpy.data.collections:
         target_collection = bpy.data.collections[collection_name]
@@ -61,6 +96,7 @@ def checkAndCreateCollection(collection_name):
         bpy.context.scene.collection.children.link(target_collection)
         print(f"Created new collection: '{collection_name}'")
         return target_collection
+
 #Function to set all sphere objects to smooth shading
 def smoothShadeAll(objs):
     for obj in objs:
@@ -150,7 +186,27 @@ def moveOutofBoundsObjects(objs, max_loc_range):
             if (isSphereOutofBounds(obj, max_loc_range)):
                 print(f"Sphere {obj.name} is out of bounds")
                 moveOutOfBounds(obj, max_loc_range)
-    
+
+# Function to reduce Diameter
+def reduceDiameter(obj, reduction):
+    reduction_vector = Vector((reduction, reduction, reduction))
+    obj.dimensions -= reduction_vector
+
+#function to check if there is any overlap between any of the cylinders and then correct it
+def fixOverlap(base_obj, objs):
+    for obj in objs:
+        distance = calculateDistance(base_obj.location, obj.location)
+        radi = (base_obj.dimensions[0] / 2) + (obj.dimensions[0] / 2)
+        if radi > distance:
+            print("overlap detected : ")
+            difference = distance - radi
+            reduceDiameter(base_obj, difference)
+
+#Functiont to fix all overlaps
+def fixAllOverlaps(objs):
+    for obj in objs:
+        fixOverlap(obj, objs)
+            
 # Function to create all the randomised spheres     
 def createSpheres(max_loc_range, radius, n_spheres, target_collection, collection_name):
     for i in range(n_spheres):
@@ -201,6 +257,7 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_r
     
     #set diameter for all speres based on the distance between them
     setDiametersForAll(objs)
+#    fillDiameterGapsBetweenAllObjects(objs)
     
     # -------------------------------------------------------------------#
     # FIX: Force Blender to update the dimensions before checking bounds!
@@ -210,8 +267,28 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_r
     #Move objects that are out of bounds inside the bounding box range
     moveOutofBoundsObjects(objs, max_loc_range)
     
-    #recalculate diameter for all speres (stops overlap of offsets)
+    #recalculate diameter for all speres (at this point there should be no overlap
+    #but some objects might be out of bounds or not filling the maximum diameter possible
+    #finds the nearest object to calculate the distance from
     setDiametersForAll(objs)
+    
+    # FIX: Force Blender to update the dimensions before checking bounds!
+    bpy.context.view_layer.update() 
+    
+    #fill diameter gaps between objects that are still there
+    fillDiameterGapsBetweenAllObjects(objs)
+    
+    #make sure dimensions are updated again
+    bpy.context.view_layer.update() 
+    
+    #Move objects that are out of bounds inside the bounding box range
+    moveOutofBoundsObjects(objs, max_loc_range)
+    
+    #create a function to check for overlap, if it exists then reduce the larger sphere
+    fixAllOverlaps(objs)
+    
+    # FIX: Force Blender to update the dimensions before checking bounds!
+    bpy.context.view_layer.update() 
     
     #add smooth shading to all the objects
     smoothShadeAll(objs)
