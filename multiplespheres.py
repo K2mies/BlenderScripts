@@ -187,7 +187,7 @@ def moveOutofBoundsObjects(objs, max_loc_range):
                 print(f"Sphere {obj.name} is out of bounds")
                 moveOutOfBounds(obj, max_loc_range)
 
-# Function to reduce Diameter
+# Function to reduce Diameter by reduction
 def reduceDiameter(obj, reduction):
     reduction_vector = Vector((reduction, reduction, reduction))
     obj.dimensions -= reduction_vector
@@ -195,17 +195,30 @@ def reduceDiameter(obj, reduction):
 #function to check if there is any overlap between any of the cylinders and then correct it
 def fixOverlap(base_obj, objs):
     for obj in objs:
-        distance = calculateDistance(base_obj.location, obj.location)
-        radi = (base_obj.dimensions[0] / 2) + (obj.dimensions[0] / 2)
-        if radi > distance:
-            print("overlap detected : ")
-            difference = distance - radi
-            reduceDiameter(base_obj, difference)
+        if (checkForName(obj, "RandomSphere")):
+            distance = calculateDistance(base_obj.location, obj.location)
+            radi = (base_obj.dimensions[0] / 2) + (obj.dimensions[0] / 2)
+            if radi > distance and distance > 0:
+                print("overlap detected : ")
+                difference = distance - radi
+                print("radi = ", radi)
+                print("distance = ", distance)
+                if difference < 0:
+                    difference *= -1
+                print(f"sphere '{obj.name}' reduced by '{difference}'")
+                if difference > 0:
+                    if base_obj.dimensions[0] / 2 < obj.dimensions[0] / 2:
+                        reduceDiameter(base_obj, difference)
+                    else:
+                        reduceDiameter(obj, difference)
+                    #reduceDiameter(base_obj, difference)
+                    #reduceDiameter(obj, difference)
 
 #Functiont to fix all overlaps
 def fixAllOverlaps(objs):
     for obj in objs:
-        fixOverlap(obj, objs)
+        if (checkForName(obj, "RandomSphere")):
+            fixOverlap(obj, objs)
             
 # Function to create all the randomised spheres     
 def createSpheres(max_loc_range, radius, n_spheres, target_collection, collection_name):
@@ -257,7 +270,7 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_r
     
     #set diameter for all speres based on the distance between them
     setDiametersForAll(objs)
-#    fillDiameterGapsBetweenAllObjects(objs)
+#   fillDiameterGapsBetweenAllObjects(objs)
     
     # -------------------------------------------------------------------#
     # FIX: Force Blender to update the dimensions before checking bounds!
@@ -284,11 +297,12 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_r
     #Move objects that are out of bounds inside the bounding box range
     moveOutofBoundsObjects(objs, max_loc_range)
     
-    #create a function to check for overlap, if it exists then reduce the larger sphere
-    fixAllOverlaps(objs)
+    for _ in range(5):
+         #create a function to check for overlap, if it exists then reduce the larger sphere
+        fixAllOverlaps(objs)
+        # FIX: Force Blender to update the dimensions before checking bounds! 
+        bpy.context.view_layer.update()
     
-    # FIX: Force Blender to update the dimensions before checking bounds!
-    bpy.context.view_layer.update() 
     
     #add smooth shading to all the objects
     smoothShadeAll(objs)
