@@ -207,10 +207,10 @@ def fixOverlap(base_obj, objs):
                     difference *= -1
                 print(f"sphere '{obj.name}' reduced by '{difference}'")
                 if difference > 0:
-                    if base_obj.dimensions[0] / 2 < obj.dimensions[0] / 2:
-                        reduceDiameter(base_obj, difference)
+                    if base_obj.dimensions[0] / 2 > obj.dimensions[0] / 2:
+                        reduceDiameter(obs, difference)
                     else:
-                        reduceDiameter(obj, difference)
+                        reduceDiameter(base_obj, difference)
                     #reduceDiameter(base_obj, difference)
                     #reduceDiameter(obj, difference)
 
@@ -284,7 +284,6 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_r
     #but some objects might be out of bounds or not filling the maximum diameter possible
     #finds the nearest object to calculate the distance from
     setDiametersForAll(objs)
-    
     # FIX: Force Blender to update the dimensions before checking bounds!
     bpy.context.view_layer.update() 
     
@@ -293,6 +292,9 @@ def generateRandomSpheres(min_count = 1, max_count = 20, radius = 1.0, min_loc_r
     
     #make sure dimensions are updated again
     bpy.context.view_layer.update() 
+#    for _ in range(5):
+#        fillDiameterGapsBetweenAllObjects(objs)
+#        bpy.context.view_layer.update()
     
     #Move objects that are out of bounds inside the bounding box range
     moveOutofBoundsObjects(objs, max_loc_range)
