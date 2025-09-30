@@ -208,9 +208,9 @@ def fixOverlap(base_obj, objs):
                 print(f"sphere '{obj.name}' reduced by '{difference}'")
                 if difference > 0:
                     if base_obj.dimensions[0] / 2 > obj.dimensions[0] / 2:
-                        reduceDiameter(obs, difference)
-                    else:
                         reduceDiameter(base_obj, difference)
+                    else:
+                        reduceDiameter(obj, difference)
                     #reduceDiameter(base_obj, difference)
                     #reduceDiameter(obj, difference)
 
