@@ -200,7 +200,8 @@ def fixOverlap(base_obj, objs):
             radi = (base_obj.dimensions[0] / 2) + (obj.dimensions[0] / 2)
             if radi > distance and distance > 0:
                 print("overlap detected : ")
-                difference = distance - radi
+                #difference = distance - radi
+                difference = radi - distance
                 print("radi = ", radi)
                 print("distance = ", distance)
                 if difference < 0:
