@@ -70,6 +70,8 @@ def fillDiameterGap(obj, closest_obj, distance):
     expansion = distance - radi
     safe_expansion = expansion * 0.5
     setDiameter(obj, obj.dimensions[0] + expansion)
+    #setDiameter(obj, obj.dimensions[0] + safe_expansion)
+    #setDiameter(closest_obj, closest_obj.dimensions[0] + safe_expansion)
 
 #function to fill the diameter gaps left between all objects
 def fillDiameterGapsBetweenAllObjects(objs):
@@ -208,10 +210,12 @@ def fixOverlap(base_obj, objs):
                     difference *= -1
                 print(f"sphere '{obj.name}' reduced by '{difference}'")
                 if difference > 0:
-                    if base_obj.dimensions[0] / 2 > obj.dimensions[0] / 2:
-                        reduceDiameter(base_obj, difference)
-                    else:
-                        reduceDiameter(obj, difference)
+                    reduceDiameter(base_obj, difference / 2)
+                    reduceDiameter(obj, difference / 2)
+                    #if base_obj.dimensions[0] / 2 > obj.dimensions[0] / 2:
+                        #reduceDiameter(base_obj, difference)
+                    #else:
+                        #reduceDiameter(obj, difference)
                     #reduceDiameter(base_obj, difference)
                     #reduceDiameter(obj, difference)
 
