@@ -4,8 +4,9 @@ import math
 import random
 from mathutils import Vector
 
-EPSILON = 0.019999;
-#EPSILON = 1e-6
+#EPSILON = 0.019999;
+#EPSILON = 0.01
+EPSILON = 1e-6
 SAFETY = 0.99
 
 #Function to calculate the square root of a number
@@ -83,7 +84,8 @@ def fillDiameterGap(obj, closest_obj, distance):
 #    safe_expansion = expansion * 0.5
     if gap > EPSILON:
         expansion = gap * 0.5
-        setDiameter(obj, obj.dimensions[0] + expansion * SAFETY)
+        #setDiameter(obj, obj.dimensions[0] + expansion * SAFETY)
+        setDiameter(obj, obj.dimensions[0] + expansion - EPSILON)
         bpy.context.view_layer.update() 
 #    setDiameter(obj, obj.dimensions[0] + safe_expansion)
 #    setDiameter(closest_obj, closest_obj.dimensions[0] + safe_expansion)
@@ -96,8 +98,6 @@ def fillDiameterGapsBetweenAllObjects(objs):
             closest_obj, distance = getClosestObjAndDistance(obj, objs)
             if (isCombinedRadiUnderDistance(obj, closest_obj, distance)):
                 fillDiameterGap(obj, closest_obj, distance)
-
-    
 
 #Function to check if SPHERES collection exists and if not to create it
 def checkAndCreateCollection(collection_name):
@@ -237,8 +237,9 @@ def fixOverlap(base_obj, objs):
 #                if difference < 0:
 #                    difference *= -1
                 #print(f"sphere '{obj.name}' reduced by '{overlap_amount}'")
-                #if overlap_amount > 0:
+                #f overlap_amount > 0:
                 if difference > EPSILON:
+                #if difference > 0:
                     #diameter_reduction = 2 * overlap_amount
                     #diameter_reduction *= 1.001
                     #reduceDiameter(base_obj, diameter_reduction / 2)
@@ -246,16 +247,17 @@ def fixOverlap(base_obj, objs):
                     #reduceDiameter(base_obj, diameter_reduction)
                     #reduceDiameter(base_obj, difference)
                     #reduceDiameter(obj, difference)
-                    reduceDiameter(base_obj, difference / 2)
-                    reduceDiameter(obj, difference / 2)
-                    bpy.context.view_layer.update()
+                    #reduceDiameter(base_obj, difference / 2)
+                    #reduceDiameter(obj, difference / 2)
+                    #bpy.context.view_layer.update()
                     #break
                     #if base_obj.dimensions[0] / 2 > obj.dimensions[0] / 2:
                         #reduceDiameter(base_obj, difference)
                     #else:
                         #reduceDiameter(obj, difference)
-                    #reduceDiameter(base_obj, difference)
+                    reduceDiameter(base_obj, difference)
                     #reduceDiameter(obj, difference)
+                    bpy.context.view_layer.update()
  
 #Functiont to fix all overlaps
 def fixAllOverlaps(objs):
@@ -296,7 +298,7 @@ def createSpheres(max_loc_range, radius, n_spheres, target_collection, collectio
 
         #Create the sphere
         bpy.ops.mesh.primitive_uv_sphere_add(radius = 1.0, location = (loc_x, loc_y, loc_z))
-        
+        we
         # Get a reference to the newly created object
         new_sphere = bpy.context.active_object
         new_sphere.name = f"RandomSphere_{i}"
